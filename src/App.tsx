@@ -13,18 +13,30 @@ const [value, setValue] = useState<string>('');
 const [todos, setTodos] = useState<ITodo[]>([]);
 
 const handleSubmit = (event: FormElm): void => {
-  event.preventDefault()
-  addTodo(value)
-  setValue('')
+ event.preventDefault();
+ addTodo(value);
+ setValue('');
 }
 
-const addTodo = (text: string) => {
-  const newTodos: ITodo[] = [...todos, {text, complete: false}]
+const addTodo = (text: string):void => {
+  const newTodos = [...todos, {text, complete: false}];
+  setTodos(newTodos);
+  
+}
+
+const completeTodo = (index: number):void => {
+  const newTodos = [...todos];
+  newTodos[index].complete = !newTodos[index].complete;
   setTodos(newTodos)
+  
 }
 
-console.log(todos);
-console.log(value);
+const deleteTodo = (index: number):void => {
+  const newTodos = [...todos];
+  newTodos.splice(index, 1);
+  setTodos(newTodos)
+ }
+  
   return (
     <Fragment>
       <h1>Todo List</h1>
@@ -32,6 +44,16 @@ console.log(value);
         <input type="text" value={value} onChange={event => setValue(event.target.value)} required/>
         <button type='submit'>Add Todo</button>
       </form>
+      <section>
+        {todos.map((todo: ITodo, index: number) =>  
+        (<Fragment  key={index}>
+          <div style={{ textDecoration: todo.complete ? 'line-through' : ''}}>{todo.text}</div>
+          <button onClick={() => completeTodo(index)}>{todo.complete ? 'Incomplete' : 'Complete'}</button>
+          <button onClick={() => deleteTodo(index)}>&times;</button>
+        </Fragment>
+        
+        ))}
+      </section>
     </Fragment>
   );
 }
